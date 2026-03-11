@@ -1,1 +1,43 @@
+name: Build Mac Application
 
+# This triggers the process every time you upload new code to the 'main' branch
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_mac_app:
+    # This tells GitHub to rent a virtual Mac for this job
+    runs-on: macos-latest
+
+    steps:
+    # Step 1: Download your files onto the virtual Mac
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Step 2: Install Python on the virtual Mac
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    # Step 3: Install the required libraries
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas ttkbootstrap requests beautifulsoup4 pyinstaller
+
+    # Step 4: Run the PyInstaller compiler
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --noconfirm --windowed --name "BWV_Explorer" --icon="bwv.icns" --hidden-import "ttkbootstrap" "bwv_gui.py"
+        
+        # Copy the CSV data file directly inside the Mac application bundle
+        cp bach_bwv_catalog.csv dist/BWV_Explorer.app/Contents/MacOS/
+
+    # Step 5: Save the finished application so you can download it to your Windows PC
+    - name: Upload Application
+      uses: actions/upload-artifact@v4
+      with:
+        name: BWV_Explorer_Mac
+        path: dist/BWV_Explorer.app
