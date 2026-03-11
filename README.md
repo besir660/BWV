@@ -1,0 +1,1 @@
+Small windows app based on python which provides a tool to explore the Bach works based on BWV and as listed in https://en.wikipedia.org/wiki/List_of_compositions_by_Johann_Sebastian_Bach. Just unzip the folder and run the .exe file
